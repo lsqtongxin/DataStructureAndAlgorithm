@@ -61,11 +61,6 @@ class NumArray {
         
         node.sum=node.left.sum+node.right.sum;    
     }
-    
-   
-    
-    
-   
     private int query(Node node,int queryL,int queryR)
     {
         if(node.start==queryL && node.end==queryR)return node.sum;
@@ -92,15 +87,10 @@ class NumArray {
     }
 }
 
-
 // 线段树，底层是数组
 class NumArray {
-
-    
     private int[] data;
     private int[] tree;
-    
-    
     public NumArray(int[] nums) {
         
         data=new int[nums.length];
@@ -138,15 +128,12 @@ class NumArray {
         buildSegmentTree(right,m+1,r);
         tree[TreeIndex]=tree[left]+tree[right];
     }
-    
-    
     public void update(int i, int val) {
         
         data[i]=val;
         set(0,0,data.length-1,i,val);
         
     }
-    
     private void set(int treeIndex,int l,int r,int i,int val)
     {
         if(l==r)
@@ -170,8 +157,6 @@ class NumArray {
         
         tree[treeIndex]=tree[left]+tree[right];        
     }
-    
-    
     private int query(int treeIndex,int l,int r,int queryL,int queryR)
     {
         
@@ -194,8 +179,6 @@ class NumArray {
         int rChild=query(right,m+1,r,m+1,queryR);
         return lChild+rChild;
     }
-    
-    
     public int sumRange(int i, int j) {
         return query(0,0,data.length-1,i,j);
     }
@@ -314,3 +297,5 @@ class NumArray {
  * obj.update(i,val);
  * int param_2 = obj.sumRange(i,j);
  */
+
+// RMQ问题： 树状数组
