@@ -18,3 +18,8 @@ RMQ:
 
 BinaryTreeLevelOrder:
   102,107,199,429
+
+TwoPointers:
+  fast-slow pointer:
+  front-end pointer:
+  sliding window: 80,82
