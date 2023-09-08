@@ -23,3 +23,6 @@ TwoPointers:
   fast-slow pointer:
   front-end pointer:
   sliding window: 80,82
+
+ReverseList:
+   143,
