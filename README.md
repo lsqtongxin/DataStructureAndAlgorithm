@@ -22,7 +22,8 @@ BinaryTreeLevelOrder:
 TwoPointers:
   fast-slow pointer:
   front-end pointer:
-  sliding window: 80,82
+  sliding window: 80,82,26,27,283,83
+  expand pointer: 5
 
 ReverseList:
    143,

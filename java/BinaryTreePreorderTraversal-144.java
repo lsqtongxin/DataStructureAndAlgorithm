@@ -29,7 +29,7 @@ class Solution {
     }
 }
 
-// 前序遍历-迭代版本
+// 前序遍历-迭代版本1
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -56,6 +56,47 @@ class Solution {
             res.add(temp.val);
             if(temp.right!=null)stack.push(temp.right);
             if(temp.left!=null)stack.push(temp.left);
+        }
+        return res;
+    }
+}
+
+// 前序遍历-迭代版本2
+class Solution {
+    List<Integer> res = new ArrayList<>();
+    public List<Integer> preorderTraversal(TreeNode root) {
+        if(root==null)return res;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode cur = root;
+        while(cur!=null || stack.size()!=0){
+            while(cur!=null){
+                res.add(cur.val);
+                stack.push(cur);
+                cur=cur.left;
+            }
+            cur = stack.pop();
+            cur = cur.right;
+        }
+        return res;
+    }
+}
+
+// 前序遍历-迭代版本3
+class Solution {
+    List<Integer> res = new ArrayList<>();
+    public List<Integer> preorderTraversal(TreeNode root) {
+        if(root==null)return res;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode cur = root;
+        while(cur!=null || stack.size()!=0){
+            if(cur!=null){
+                res.add(cur.val);
+                stack.push(cur);
+                cur=cur.left;
+            }else{
+                cur = stack.pop();
+                cur = cur.right;
+            }
         }
         return res;
     }
