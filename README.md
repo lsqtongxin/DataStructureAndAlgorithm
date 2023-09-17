@@ -15,6 +15,7 @@ Intervals:
   56,303,307
 
 RMQ:
+  239
 
 BinaryTreeLevelOrder:
   102,107,199,429
