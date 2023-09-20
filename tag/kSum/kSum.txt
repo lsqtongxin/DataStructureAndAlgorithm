@@ -1,0 +1,341 @@
+1. Leetcode 1.TwoSum
+2Sum: Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+Input:
+nums = [2, 7, 11, 15], target = 9
+
+Output:
+[0, 1]
+
+Explanation:
+nums[0] + nums[1] = 2 + 7 = 9, hence return indices [0, 1].
+Let's analyze the question together and not get too far away just yet!
+The solution provided below is using hash map to store the key-value pair of the number and the index. If the map exists the key such that target - nums[i], then we can conclude that the sum of these two numbers equals to the target. We simply return their indices in array.
+
+    public int[] twoSum(int[] nums, int target) {
+        int [] res = new int[2];
+        if(nums == null || nums.length == 0){
+            return res;
+        }
+        Map<Integer,Integer> map = new HashMap<>();
+        for(int i = 0; i < nums.length; i++){
+            if(map.get(target - nums[i]) != null){
+                res[0] = map.get(target - nums[i]);
+                res[1] = i;
+                return res;
+            }
+            map.put(nums[i], i);
+        }
+        return res;  
+    }
+Hash Map
+2. leetcode 167
+2Sum Follow up: What if the input array is sorted?
+The question is telling us that we should make use of the sorted array! The standard solution is using two pointers.
+    public int[] twoSum(int[] nums, int target) {
+        int [] res = new int[2];
+        if(nums == null || nums.length == 0){
+            return res;
+        }
+        int left = 0, right = nums.length - 1; 
+        while( left < right){    
+            if(nums[left] + nums[right] == target){
+                res[0] = left + 1;
+                res[1] = right + 1;
+                return res;     
+            } 
+            if(nums[left] + nums[right] < target){
+                left++;
+            } else {
+                right--;
+            }  
+        }
+        return res;
+    }
+3. 
+2Sum Variant: Find how many pairs in the array such that their sum is less than or equal to a specific target number.
+Like the previous solution, except that we need to find the count of pairs which is less than or equal to target.
+
+    public int[] twoSum(int[] nums, int target) {
+        
+        if(nums == null || nums.length < 2){
+            return 0;
+        }
+        Arrays.sort(nums);
+        int count = 0;
+        int left = 0, right = nums.length - 1; 
+        while( left < right){    
+            if(nums[left] + nums[right] <= target){
+                count += right - left;
+                left++;
+            } else {
+                right--;
+            }  
+        }
+        return count;
+    }    
+ NOTE
+We use count += right - left because we know that the sum of current left number and any numbers before current right number will be less than the target. For example, if we have number 1, 2, 3, 4, 5 ,6 and the target is 8, then we know that
+1 + 6 <= 8
+1 + 5 <= 8
+1 + 4 <= 8
+1 + 3 <= 8
+1 + 2 <= 8
+Hence, we can add count += right - left into the count.
+
+2Sum Variant: Find the sum of the two integers such that the sum is closest to target.
+Very similar to previous question, except that we need to find the closest sum to target, hence we can find the smallest value of the difference between target and the sum of two left and right numbers.
+
+    public int[] twoSumClosest(int[] nums, int target) {
+        
+        if(nums == null || nums.length < 2){
+            return 0;
+        }
+        Arrays.sort(nums);
+        int bestSum = nums[0] + nums[1];
+        int left = 0, right = nums.length - 1; 
+        while( left < right){    
+            int sum = nums[left] + nums[right];
+            if(Math.abs(target - sum) < Math.abs(target - bestSum)){
+                bestSum = sum;
+            }
+            if(sum < target){
+                left++;
+            } else {
+                right--;
+            }  
+        }
+        return bestSum;
+    }    
+Two Pointers
+
+2Sum Variant: Find how many unique pairs in the array such that their sum is equal to a specific target number.
+Input:
+nums = [1, 1, 2, 45, 46, 46], target = 47
+
+Output:
+2
+
+Explanation:
+1 + 46 = 47
+2 + 45 = 47
+Hence, return 2 sets.
+In this question, your input array must be sorted and once you found the pair that sums up to target, you need to keep moving the pointers towards each other until the index number is different than current index number.
+
+    public int twoSum(int[] nums, int target) {
+        
+        if(nums == null || nums.length < 2){
+            return 0;
+        }
+        Arrays.sort(nums);
+        int count = 0;
+        int left = 0, right = nums.length - 1; 
+        while( left < right){    
+            if(nums[left] + nums[right] == target){
+                count++;
+                left++;
+                right--;
+                // moving left pointer to right to skip duplicates
+                while(left < right && nums[left] == nums[left - 1]){
+                    left++;
+                }
+                // moving right pointer to left to skip duplicates
+                while(left < right && nums[right] == nums[right + 1]){
+                    right--;
+                }
+            } else if(nums[left] + nums[right] < target){
+                left++;
+            } else {
+                right--;
+            }  
+        }
+        return count;
+    }
+Two Pointers
+
+NOTE
+The hardest part is that the array contains duplicated numbers and you need to make sure that the same duplicated pairs are not included. You cannot de-duplicate the array beforehand because you might lose the count of sum of two equal numbers that is equal to the target.
+
+3Sum: Given an array nums of n integers, find all unique triplets in the array which gives the sum of zero.
+Like how we do 2Sum, we can sort the array and apply the two pointers method to solve for the sum, but now we have 3 variables that sums up to 0. We can do a for loop, then apply 2Sum on the inner loop to find out 3Sum equals to 0.
+
+Unlike 2Sum, we need to return the list of solution set which does not contain duplicate triplets.
+
+Here's the solution:
+
+    public List<List<Integer>> threeSum(int[] nums) {
+
+        List<List<Integer>> results = new ArrayList<>();
+        if(nums == null || nums.length < 3){
+            return results;
+        }
+        Arrays.sort(nums);
+        for(int i = 0 ; i < nums.length - 2; i++){
+            // skip duplicates
+            if(i > 0 && nums[i] == nums[i - 1]){
+                continue;
+            }
+            
+            int left = i + 1, right = nums.length - 1;
+
+            while(left < right){
+                
+                if(nums[i] + nums[left] + nums[right] == 0){
+                    List<Integer> result = new ArrayList<>();
+                    result.add(nums[i]);
+                    result.add(nums[left]);
+                    result.add(nums[right]);
+                    results.add(result);
+                    
+                    left++;
+                    right--;
+                    
+                    // moving left pointer to right to skip duplicates
+                    while(left < right && nums[left] == nums[left - 1]){
+                        left++;
+                    }
+                    // moving right pointer to left to skip duplicates 
+                    while(left < right && nums[right] == nums[right + 1]){
+                        right--;
+                    }
+                    
+                } else if(nums[i] + nums[left] + nums[right] < 0){
+                    left++;
+                } else{
+                    right--;
+                } 
+            } 
+        }
+        return results;
+    }
+
+Two Pointers
+
+3Sum Variant: Find three integers in nums such that the sum is closest to target.
+Very similar to 2Sum's finding closest sum to target with 3Sum's idea, this question can be solved without
+
+    public int threeSumClosest(int[] nums, int target) {
+        
+        if(nums == null || nums.length < 3){
+            return -1;
+        }
+        Arrays.sort(nums);
+        int bestSum = nums[0] + nums[1] + nums[2];
+        for(int i = 0 ; i < nums.length - 2; i++){
+            int left = i + 1, right = nums.length - 1;
+            while(left < right){
+                int sum = nums[i] + nums[left] + nums[right];
+                if(Math.abs(target - sum) < Math.abs(target - bestSum)){
+                    bestSum = sum; 
+                }
+                if(sum < target){
+                    left++;
+                } else{
+                    right--;
+                }
+            }
+        }
+
+        return bestSum;        
+    }
+Two Pointers
+
+4Sum: Given an array nums of n integers and an integer target, find all unique quadruplets in the array which gives the sum of target.
+Once you master 3Sum, 4Sum should not be a problem. You just need to pay more attention on the corner cases and such.
+
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+ 
+        List<List<Integer>> results = new ArrayList<>();
+        if(nums == null || nums.length < 4){
+            return results;
+        }
+        Arrays.sort(nums);        
+        for(int i = 0 ; i < nums.length - 3; i++){
+            // skip duplicates
+            if(i > 0 && nums[i] == nums[i - 1]){
+                continue;
+            }
+            for(int j = i + 1 ; j < nums.length - 2; j++){
+                // skip duplicates
+                if(j > i + 1 && nums[j] == nums[j - 1]){
+                    continue;
+                }
+                int left = j + 1, right = nums.length - 1;
+                while(left < right){
+
+                    if(nums[i] + nums[j] + nums[left] + nums[right] == target){
+                        List<Integer> result = new ArrayList<>();
+                        result.add(nums[i]);
+                        result.add(nums[j]);
+                        result.add(nums[left]);
+                        result.add(nums[right]);
+                        results.add(result);
+
+                        left++;
+                        right--;
+
+                        // moving left pointer to right to skip duplicates
+                        while(left < right && nums[left] == nums[left - 1]){
+                            left++;
+                        }
+                        // moving right pointer to left to skip duplicates 
+                        while(left < right && nums[right] == nums[right + 1]){
+                            right--;
+                        }
+                    } else if(nums[i] + nums[j] + nums[left] + nums[right] < target){
+                        left++;
+                    } else{
+                        right--;
+                    } 
+                }                 
+            }
+        }
+        return results;
+    }
+Two Pointers
+
+4Sum Variant: Given four lists A, B, C, D of integer values, compute how many tuples (i, j, k, l) there are such that A[i] + B[j] + C[k] + D[l] is zero.
+Input:
+A = [ 1, 2]
+B = [-2,-1]
+C = [-1, 2]
+D = [ 0, 2]
+
+Output:
+2
+
+Explanation:
+The two tuples are:
+1. (0, 0, 0, 1) -> A[0] + B[0] + C[0] + D[1] = 1 + (-2) + (-1) + 2 = 0
+2. (1, 1, 0, 0) -> A[1] + B[1] + C[0] + D[0] = 2 + (-1) + (-1) + 0 = 0
+In this question, we can't use the famous two pointers anymore. The quicker and simpler solution is to use hash map to put the sum of two numbers from the 1st and 2st arrays into the map which stores the count of sum set, then we check if the map contains the sum which equals to the sum of two numbers from 3rd and 4th arrays. If we found the sum in map, then we incrementing the count.
+
+Let's see the solution:
+
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+
+        Map<Integer, Integer> map = new HashMap<>();
+        int count = 0;
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < B.length; j++) {
+                int sum = A[i] + B[j];
+                if (map.containsKey(sum)) {
+                    map.put(sum, map.get(sum) + 1);
+                }
+                else {
+                    map.put(sum, 1);
+                }
+            }
+        }
+        for (int i = 0; i < C.length; i++) {
+            for (int j = 0; j < D.length; j++) {
+                int sum = -(C[i] + D[j]);
+                if (map.containsKey(sum)) {
+                    count += map.get(sum);
+                }
+            }
+        }
+        return count;
+    }
+Hash Table
+
+Well, that's all about it. I hope you guys learn a lot about two pointers and that you can master the x-sum questions now! See ya all next time!
