@@ -95,3 +95,38 @@ class Solution {
         return count[m-1][n-1];
     }
 }
+
+// 4. 记忆化搜索
+class Solution {
+    int row,col;
+    int[][] memo;
+    public int uniquePaths(int m, int n) {
+        row = m;
+        col = n;
+        memo = new int[m][n];
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                memo[i][j] = -1;
+            }
+        }
+        return pathNum(0,0);
+        
+    }
+    private int pathNum(int x,int y){
+        if(x>=this.row || y>=this.col){
+            return 0;
+        }
+        if(x==this.row-1 && y==this.col-1){
+            return 1;
+        }
+        if(memo[x][y]!=-1){
+            return memo[x][y];
+        }
+        int res = 1 * pathNum(x+1,y)+ 1 * pathNum(x,y+1);
+        memo[x][y] = res;
+        return res;
+    }
+}
+
+
+
