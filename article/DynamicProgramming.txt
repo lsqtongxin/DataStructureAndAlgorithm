@@ -1,0 +1,115 @@
+牛逼的文章1 for Leetcode-91
+
+How to identify if this is a dynamic programming question?
+Consider this:
+Suppose you have a number 226. When you pick 2, you are left with 26. But you have a choice to pick 22 as well which leaves you with 6. So, at the first step you have a choice to either choose 1 digit or 2 digits.
+Moving forward, if you choose 2, you have 26. Now again you can choose 2 or 6 or 26. The second step again gives you more choices.
+
+Conclusion:
+Whenever in a problem you are given choices and making those choices impact/contribute to your answer, then that problem could be a dynamic programming problem.
+
+The first and best approach (I personally believe) to apply in these problems is recursion. And if you want to optimise, you should use memoization on top of that.
+
+How to write a recursive solution
+FAITH: Any recursive solution works on faith. The faith that your recursive method/function would give you correct answer if applied on a smaller input.
+
+BASE CONDITION: Because recursive calls are placed on an internal stack and if it goes on and on without any base condition, you'll see StackOverflowException. So, you always need a base condition in recursive solution.
+
+SOME ADDITIONAL CODE: In most of the cases, when we assume that our recursive function would give us the correct answer, we add some logic for it to work at some place in the code. Don't worry if you didn't understand this. I'll explain this later.
+
+Now let's solve this question.
+The question asks us to either select 1 or 2 digits at any point. So we'll write a function which gives us the count of ways:
+
+  public int numDecodings(String s) {...}
+This function gives us the count of ways a number can be decoded. We would need to apply the same function to a smaller input and have faith that it'd work. For that we take an index i which goes from 0 to n - 1 where n is the length of string. Now this function becomes:
+
+  public int numDecodings(String s, int i) {...}
+Now we need to write a base condition. Base condition can be derived from thinking of the smallest possible input for the question. Question gives us that the minimum length of string is 1. If we start from i = 0 and reach i = 1, then we see that there is just one way to decode. So, the base condition becomes:
+
+  if(i == n) return 1;	//for example, think that you are given "2" as the input.
+Another condition that's given in question is if 0 is leading, there is no possible way. So suppose we have "06". In this scenario when i = 0, we can simply return 0. This condition becomes:
+
+  if(s.charAt(i) == '0') return 0;
+This ends the base condition part.
+
+Now for the faith part, we move i to next position by either i + 1 or i + 2 (because these are the two choices and we code for our choices in recursion). Note that the string becomes smaller as I move forward.
+
+When I code for these two choices, the recursive calls become:
+
+  numDecodings(s, i + 1);
+and
+
+	numDecodings(s, i + 2);
+We'd get two numbers from these two calls which we can add and return.
+This ends our faith part. Great.
+
+Now comes the additional logic in code that we've discussed.
+
+The question has another condition when you take two characters at once : it should be less than or equal to 26 (alphabets have 26 characters).
+So, before taking two digits at once, we can check if these two digits do make a number <= 26 or simply < 27.
+
+This is how we can do it:
+
+	((s.charAt(i) - '0') * 10 + (s.charAt(i + 1) - '0')) < 27
+BUT - we need to add a check for i + 1 also to avoid OutOfBoundException. Since our length of string is n, i + 1 cannot be greater than n when we do s.charAt(i + 1). So, adding this condition:
+
+	i + 1 < n OR SIMPLY i < n - 1
+gives us our final condition:
+
+	i < n - 1 && ((s.charAt(i) - '0') * 10 + (s.charAt(i + 1) - '0')) < 27
+That's it! That was the last logic we had to add to make our recursive code work.
+
+So let's code it:
+public int numDecodings(String s) {
+	int n = s.length();
+	int[] mem = new int[n];
+	Arrays.fill(mem, -1);
+	return numDecodings(s, 0, mem);
+}
+
+private int numDecodings(String s, int i) {
+	int n = s.length();
+	if (i == n)		//base condition
+		return 1;
+	if (s.charAt(i) == '0')	//condition imposed by question
+		return 0;
+	int count = numDecodings(s, i + 1);		//choice number 1 : take one digit
+	if (i < n - 1 && ((s.charAt(i) - '0') * 10 + (s.charAt(i + 1) - '0')) < 27) {
+		count += numDecodings(s, i + 2);	//choice number 2 : take two digits but before making this choice, check for <= 26 or < 27 and i < n - 1 conditions. Add the result from here to the count from first choice.
+	}
+	return count;	//return the count
+}
+To make this recursive code memoized, we can use a 1D array of size n to cache the intermediate results. Recursive code usually calculates multiple scenario answers again and again which could result in TLE. To avoid this, if a count for a choice has already been calculated, we store the value and return when request by code (instead of making more recursive calls).
+To understand memoization, the best code is that of Fibonacci's series. That problem is simple and will make you understand the need of memoization.
+
+Memoization code remains exactly same except for an extra memoization array. There is no change in logic.
+Here is the memoized code for the problem:
+public int numDecodings(String s) {
+	int n = s.length();
+	int[] mem = new int[n];
+	Arrays.fill(mem, -1);
+	return numDecodings(s, 0, mem);
+}
+
+private int numDecodings(String s, int i, int[] mem) {
+	int n = s.length();
+	if (i == n)
+		return 1;
+	if (s.charAt(i) == '0')
+		return 0;
+	if (mem[i] != -1)//if this sub-problem has already been solved, don't go and invoke another series of recursive call. Get the result from cache
+		return mem[i];
+	int count = numDecodings(s, i + 1, mem);
+	if (i < n - 1 && ((s.charAt(i) - '0') * 10 + (s.charAt(i + 1) - '0')) < 27) {
+		count += numDecodings(s, i + 2, mem);
+	}
+		return mem[i] = count;//store result for each sub-problem
+}
+
+
+牛逼的文章2 for Leetcode-337
+
+The naive solution above computed these subproblems repeatedly, which resulted in bad time performance. Now if you recall the two conditions for dynamic programming (DP): "optimal substructure" + "overlapping of subproblems", we actually have a DP problem. A naive way to implement DP here is to use a hash map to record the results for visited subtrees.
+
+当存储树节点和相对的值，想用记忆化搜索，则只能用map来暂存数据，我们之前在做其他题的时候都是数字到数字，所以数组即可。
+
