@@ -48,3 +48,37 @@ class Solution {
         return str;
     }
 }
+
+
+// 2024.09.29
+
+class Solution {
+    public String frequencySort(String s) {
+        if(s.length()==0)return s;
+        char[] charArr = s.toCharArray();
+        Map<Character,Integer> fre = new HashMap<>();
+        for(int i=0;i<s.length();i++){
+            fre.put(charArr[i],fre.getOrDefault(charArr[i],0)+1);
+        }
+        List<Character> charList = new ArrayList<>();
+        for(Map.Entry<Character,Integer> entry: fre.entrySet()){
+            charList.add(entry.getKey());
+        }
+        Collections.sort(charList,new Comparator<Character>(){
+            public int compare(Character c1,Character c2){
+                return fre.get(c2)-fre.get(c1);
+            }
+        });
+
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<charList.size();i++){
+            int temp = fre.get(charList.get(i));
+            for(int j=0;j<temp;j++){
+                sb.append(charList.get(i));
+            }
+        }
+        return sb.toString();
+    }
+}
+
+

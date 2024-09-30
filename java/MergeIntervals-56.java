@@ -1,31 +1,52 @@
+// 1. 一个一个的合并，按顺序合并，注意l和r的赋值
 class Solution {
     public int[][] merge(int[][] intervals) {
-        if(intervals==null)return null;
-        if(intervals.length==1)return intervals;
+        if(intervals.length==0)return new int[0][2];
+        Arrays.sort(intervals,new Comparator<int[]>(){
+            public int compare(int[] interval1,int[] interval2){
+                return interval1[0]-interval2[0];
+            }
+        });
         int n = intervals.length;
-        // 这个语法需要学习一下
-        Arrays.sort(intervals,(a,b)->a[0]-b[0]);
-
+        List<int[]> ans = new ArrayList<>();
         int l = intervals[0][0];
         int r = intervals[0][1];
         int cur = 1;
-        // 这种语法需要学习一下
-        ArrayList<int[]> res = new ArrayList<>();
         while(cur<n){
-            int s = intervals[cur][0];
-            int e = intervals[cur][1];
-            if(r>=s){
-                r = Math.max(r,e);
-            }else{
-                // 这种语法需要学习一下
-                res.add(new int[]{l,r});
-                l = s;
-                r = e;
+            if(intervals[cur][0]<=r){
+                r = Math.max(intervals[cur][1],r);
+            }else {  // intervals[cur][0] > r
+                ans.add(new int[]{l,r});
+                l = intervals[cur][0];
+                r = intervals[cur][1];
             }
-            cur++;
+            cur++;    
         }
-        res.add(new int[]{l,r});
-        // 这种语法需要学习一下
-        return res.toArray(new int[res.size()][]);
+        ans.add(new int[]{l,r});
+        return ans.toArray(new int[ans.size()][]);
+    }
+}
+
+
+
+// 2. 
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        if(intervals.length==0)return new int[0][2];
+        Arrays.sort(intervals,new Comparator<int[]>(){
+            public int compare(int[] interval1,int[] interval2){
+                return interval1[0]-interval2[0];
+            }
+        });
+        List<int[]> ans = new ArrayList<>();
+        for(int[] p: intervals){
+            int size = ans.size();
+            if(size == 0 || ans.get(size-1)[1] < p[0]){
+                ans.add(p);
+            }else{
+                ans.get(size-1)[1] = Math.max(p[1],ans.get(size-1)[1]);
+            }
+        }
+        return ans.toArray(new int[ans.size()][]);
     }
 }

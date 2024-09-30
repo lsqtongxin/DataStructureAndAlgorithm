@@ -1,4 +1,4 @@
-// 归并排序：关键点是需要额外的数组进行盛放一些临时结果，并且还要把结果复制到原有的数组中
+//1.  归并排序：关键点是需要额外的数组进行盛放一些临时结果，并且还要把结果复制到原有的数组中
 //           额外数组一直是从0开始索引，而原始数组在不停的递归中是从某一个索引开始的,一定注意其偏差量offset
 class Solution {
     public int[] sortArray(int[] nums) {
@@ -42,5 +42,43 @@ class Solution {
         for(int i=0,j=l;i<temp.length;i++,j++){
             nums[j]=temp[i];
         }
+    }
+}
+
+// 2. quickSort
+class Solution {
+    public int[] sortArray(int[] nums) {
+        if(nums.length==0)return nums;
+        _sort(nums,0,nums.length-1);
+        return nums;
+    }
+    // 
+    public void _sort(int[] nums,int left,int right){
+        if(left>=right)return;
+        int pivot = partition(nums,left,right);
+        _sort(nums,left,pivot-1);
+        _sort(nums,pivot+1,right);
+    }
+    public int partition(int[] nums,int left,int right){
+        Random r = new Random();
+        int randPivot = r.nextInt(right-left + 1) + left;
+        int pivot = nums[randPivot];
+        swap(nums,randPivot,right);
+        int s = left, e = right-1;
+        while(s<=e){
+            while(s<right && nums[s]<pivot)s++;
+            while(e>=left && nums[e]>pivot)e--;
+            if(s>e)break;
+            swap(nums,s,e);
+            s++;
+            e--;
+        }
+        swap(nums,s,right);
+        return s;
+    }
+    public void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 }

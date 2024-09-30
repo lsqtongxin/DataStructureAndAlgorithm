@@ -1,3 +1,30 @@
+// 0. 动态规划
+//    dp[i]代表从[0,i]的这个区间进行打家劫舍的最大值
+//    dp[i] = max( nums[i] + dp[i-2] , dp[i-1]   )
+//    上面的公式也就是说 每个房屋只有  被抢劫和未抢劫 这两种状态
+//    如果抢劫了第i个房屋，同时为了不自动报警，只能是选择前面的区间[0,i-2]的最大值
+//    如果不抢劫第i个房屋，那么只需要选择前面的[0,i-1]的最大值即可
+//    我们只求这两种状态下的最大值即可。 
+class Solution {
+    public int rob(int[] nums) {
+	// 特殊情况： 如果只有一个房屋，那么进行抢劫即可。
+        if(nums.length==1)return nums[0];
+        // dp[i] = max( nums[i]+dp[i-2]  ,  dp[i-1] )
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        dp[1] = nums[1]>dp[0]?nums[1]:dp[0];
+        int maxValue = dp[0]>dp[1]?dp[0]:dp[1];
+	// 特殊情况: 如果只有两个房屋，抢其中一个值最大的即可
+        if(nums.length==2)return maxValue;
+        for(int i=2;i<nums.length;i++){
+            int temp = nums[i]+dp[i-2];
+            dp[i] =  temp>dp[i-1]?temp:dp[i-1];
+            maxValue = dp[i]>maxValue?dp[i]:maxValue;
+        }
+        return maxValue;
+    }
+}
+
 // 1. 记忆化搜索
 class Solution {
     int[] memo;

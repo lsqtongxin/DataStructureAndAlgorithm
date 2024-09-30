@@ -18,7 +18,8 @@ class Solution {
     public List<List<Integer>> levelOrder(TreeNode root) {
         List<List<Integer>> res = new ArrayList<>();
         if(root==null)return res;
-        Queue<TreeNode> queue = new ArrayDeque<>();
+        // Queue<TreeNode> queue = new ArrayDeque<>();
+        Deque<TreeNode> queue = new ArrayDeque<>();
         queue.add(root);
         while(!queue.isEmpty()){
             int size = queue.size();
