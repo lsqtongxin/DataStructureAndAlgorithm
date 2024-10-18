@@ -1,3 +1,63 @@
+// 1. 这个实现比较简单，是采用了和56一样的套路
+class Solution {
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        if(intervals.length==0){
+            int[][] ans = new int[1][2];
+            ans[0]= newInterval;
+            return ans;
+        }
+        int length = intervals.length;
+        List<int[]> ans = new ArrayList<>();
+        // insertPosition 即 ip
+        // 寻找插入点
+        int ip = 0;
+        for(;ip<length;ip++){
+            if(intervals[ip][1]<newInterval[0]){
+                continue;
+            }else{
+                break;
+            }
+        }
+        // 将插入点前面部分添加到结果集
+        for(int i=0;i<ip;i++){
+            ans.add(intervals[i]);
+        }
+
+        // 然后将插入点和插入点之后的源值加入到src中
+        List<int[]> src = new ArrayList<>();
+        for(int i=ip;i<length;i++){
+            src.add(intervals[i]);
+        }
+        // 把新增区间也加入到src中
+        src.add(newInterval);
+        // 对src进行排序操作，按照每个数组的首部进行排序
+        Collections.sort(src,new Comparator<int[]>(){
+                public int compare(int[] arr1,int[] arr2){
+                    return arr1[0]-arr2[0];
+                }
+            }
+        );
+        // 后续与56题一样，进行合并插入即可
+        for(int i=0;i<src.size();i++){
+            if(ans.isEmpty()){
+                ans.add(src.get(i));
+            }else {
+                int[] tempAns = ans.get(ans.size()-1);
+                int[] tempSrc = src.get(i);
+                if(tempAns[1]< tempSrc[0]){
+                    ans.add(tempSrc);
+                }else{ // tempAns[1]>=tempSrc[0]
+                    tempAns[1] = Math.max(tempAns[1],tempSrc[1]);
+                    ans.remove(ans.size()-1);
+                    ans.add(tempAns);
+                }
+
+            }
+        }
+        return ans.toArray(new int[ans.size()][2]);
+    }
+}
+// 2. 这个有点复杂
 class Solution {
     public int[][] insert(int[][] intervals, int[] newInterval) {
         int length = intervals.length;

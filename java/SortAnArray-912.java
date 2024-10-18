@@ -44,6 +44,59 @@ class Solution {
         }
     }
 }
+//1.2 另外一种归并排序
+class Solution {
+    public int[] sortArray(int[] nums) {
+        if(nums.length==0)return nums;
+        int[] ans = _sortArray(nums,0,nums.length-1);
+        return ans;
+    }
+    public int[] _sortArray(int[] nums,int l,int r){
+        if(l>r)return null;
+        if(l==r){
+            int[] ans = new int[1];
+            ans[0] = nums[l];
+            return ans;
+        }
+        int mid = (r-l)/2 + l;
+        int[] arr1 = _sortArray(nums,l,mid);
+        int[] arr2 = _sortArray(nums,mid+1,r);
+        int[] ans = merge(arr1,arr2);
+        return ans;
+    }
+    public int[] merge(int[] arr1,int[] arr2){
+        int length1 = arr1.length;
+        int length2 = arr2.length;
+        int[] ans = new int[length1+length2];
+        int index1=0,index2=0,index=0;
+        while(index1<length1 && index2<length2){
+            if(arr1[index1]<arr2[index2]){
+                ans[index] = arr1[index1];
+                index++;
+                index1++;
+            }else{ //arr1[index1]>=arr2[index2]
+                ans[index] = arr2[index2];
+                index2++;
+                index++;
+            }
+        }
+        if(index1>=length1){
+            while(index2<length2){
+                ans[index] = arr2[index2];
+                index2++;
+                index++;
+            }
+        }
+        if(index2>=length2){
+            while(index1<length1){
+                ans[index] = arr1[index1];
+                index1++;
+                index++;
+            }
+        }
+        return ans;
+    }
+}
 
 // 2. quickSort
 class Solution {
