@@ -14,3 +14,22 @@ class Solution {
         }
     }
 }
+
+// 算法一样，只是语法不同
+class Solution {
+    List<List<Integer>> res = new ArrayList<>();
+    Deque<Integer> stack = new ArrayDeque<>();
+    public List<List<Integer>> subsets(int[] nums) {
+        dfs(nums,0);
+        return res;
+    }
+
+    private void dfs(int[] nums,int start){
+        res.add(new ArrayList<>(stack));
+        for(int i=start ;i<nums.length;i++){
+            stack.push(nums[i]);
+            dfs(nums,i+1);
+            stack.pop();
+        }
+    }
+}
