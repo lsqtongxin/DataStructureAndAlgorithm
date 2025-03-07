@@ -64,3 +64,47 @@ class Solution {
         rightView(node.left,curDepth+1);
     }
 }
+
+
+// 3. 还是层序遍历
+//    每一层的最后一个元素，比第一个方法更省内存
+//    与 LCR046-二叉树的右视图https://leetcode.cn/problems/WNC0Lk/description/
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    List<Integer> res = new ArrayList<>();
+    public List<Integer> rightSideView(TreeNode root) {
+        if(root==null)return res;
+        levelOrder(root);
+        return res;
+    }
+    private void levelOrder(TreeNode node){
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.add(node);
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                TreeNode temp = queue.remove();
+                if(i==size-1){
+                    res.add(temp.val);
+                }
+                if(temp.left!=null)queue.add(temp.left);
+                if(temp.right!=null)queue.add(temp.right);
+            }
+        }
+
+    }
+}
